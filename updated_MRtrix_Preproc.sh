@@ -39,7 +39,7 @@ ANAT=$7
 mrconvert $RAW_DWI raw_dwi.mif -fslgrad $BVEC $BVAL
 dwidenoise raw_dwi.mif dwi_den.mif -noise noise.mif
 
-# Extract the b0 images from the diffusion data acquired in the AP direction
+# Extract the b0 images from the diffusion data acquired in the PA direction
 dwiextract dwi_den.mif - -bzero | mrmath - mean mean_b0_PA.mif -axis 3
 
 # Extracts the b0 images for diffusion data acquired in the AP direction
