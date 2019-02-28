@@ -4,7 +4,7 @@
 
 
 ### Quality checks for Step 2 ###
-G
+
 # Views the voxels used for FOD estimation
 echo "Now viewing the voxels used for FOD estimation (Blue=WM; Green=GM; Red=CSF)"
 mrview dwi_den_unr_preproc_unbiased.mif -overlay.load voxels.mif
