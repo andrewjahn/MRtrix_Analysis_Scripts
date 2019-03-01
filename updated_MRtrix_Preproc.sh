@@ -54,7 +54,7 @@ mrconvert AP.mif -fslgrad $AP_BVEC $AP_BVAL - | mrmath - mean mean_b0_PA.mif -ax
 mrcat mean_b0_PA.mif mean_b0_AP.mif -axis 3 b0_pair.mif
 
 # Runs the dwipreproc command, which is a wrapper for eddy and topup. This step takes about 2 hours on an iMac desktop with 8 cores
-dwipreproc dwi_den.mif dwi_den_preproc.mif -pe_dir PA -rpe_pair -se_epi b0_pair.mif -eddy_options " --slm=linear --data_is_shelled"
+dwipreproc dwi_den.mif dwi_den_preproc.mif -nocleanup -pe_dir PA -rpe_pair -se_epi b0_pair.mif -eddy_options " --slm=linear --data_is_shelled"
 
 # Performs bias field correction. Needs ANTs to be installed in order to use the "ants" option (use "fsl" otherwise)
 dwibiascorrect -ants dwi_den_preproc.mif dwi_den_preproc_unbiased.mif -bias bias.mif
