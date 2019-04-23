@@ -48,14 +48,14 @@ dwiextract dwi_den.mif - -bzero | mrmath - mean mean_b0_AP.mif -axis 3
 # For the PA_BVEC and PA_BVAL files, they should be in the follwing format (assuming you extract only one volume):
 # PA_BVEC: 0 0 0
 # PA_BVAL: 0
-mrconvert $FIELDMAP -coord 3 0 AP.mif
+mrconvert $FIELDMAP -coord 3 0 PA.mif
 mrconvert PA.mif -fslgrad $PA_BVEC $PA_BVAL - | mrmath - mean mean_b0_PA.mif -axis 3
 
 # Concatenates the b0 images from AP and PA directions to create a paired b0 image
 mrcat mean_b0_AP.mif mean_b0_PA.mif -axis 3 b0_pair.mif
 
 # Runs the dwipreproc command, which is a wrapper for eddy and topup. This step takes about 2 hours on an iMac desktop with 8 cores
-dwipreproc dwi_den.mif dwi_den_preproc.mif -nocleanup -pe_dir A{ -rpe_pair -se_epi b0_pair.mif -eddy_options " --slm=linear --data_is_shelled"
+dwipreproc dwi_den.mif dwi_den_preproc.mif -nocleanup -pe_dir AP -rpe_pair -se_epi b0_pair.mif -eddy_options " --slm=linear --data_is_shelled"
 
 # Performs bias field correction. Needs ANTs to be installed in order to use the "ants" option (use "fsl" otherwise)
 dwibiascorrect -ants dwi_den_preproc.mif dwi_den_preproc_unbiased.mif -bias bias.mif
