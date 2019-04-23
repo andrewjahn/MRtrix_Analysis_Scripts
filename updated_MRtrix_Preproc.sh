@@ -24,8 +24,8 @@ display_usage() {
 
 RAW_DWI=$1
 FIELDMAP=$2
-BVEC=$3
-BVAL=$4
+AP_BVEC=$3
+AP_BVAL=$4
 PA_BVEC=$5
 PA_BVAL=$6
 ANAT=$7
@@ -36,7 +36,7 @@ ANAT=$7
 ######################################################################
 
 # Also consider doing Gibbs denoising (using mrdegibbs). Check your diffusion data for ringing artifacts before deciding whether to use it
-mrconvert $RAW_DWI raw_dwi.mif -fslgrad $BVEC $BVAL
+mrconvert $RAW_DWI raw_dwi.mif -fslgrad $PA_BVEC $PA_BVAL
 dwidenoise raw_dwi.mif dwi_den.mif -noise noise.mif
 
 # Extract the b0 images from the diffusion data acquired in the PA direction
@@ -48,7 +48,7 @@ dwiextract dwi_den.mif - -bzero | mrmath - mean mean_b0_PA.mif -axis 3
 # AP_BVEC: 0 0 0
 # AP_BVAL: 0
 mrconvert $FIELDMAP -coord 3 0 AP.mif
-mrconvert AP.mif -fslgrad $AP_BVEC $AP_BVAL - | mrmath - mean mean_b0_PA.mif -axis 3
+mrconvert AP.mif -fslgrad $AP_BVEC $AP_BVAL - | mrmath - mean mean_b0_AP.mif -axis 3
 
 # Concatenates the b0 images from AP and PA directions to create a paired b0 image
 mrcat mean_b0_PA.mif mean_b0_AP.mif -axis 3 b0_pair.mif
@@ -110,7 +110,7 @@ mrtransform 5tt_nocoreg.mif -linear diff2struct_mrtrix.txt -inverse 5tt_coreg.mi
 # Create streamlines
 # Note that the "right" number of streamlines is still up for debate. Last I read from the MRtrix documentation,
 # They recommend about 100 million tracks. Here I use 10 million, if only to save time. Read their papers and then make a decision
-tckgen -act 5tt_coreg.mif -backtrack -seed_dynamic gmwmSeed_coreg.mif -nthreads 8 -maxlength 250 -cutoff 0.06 -select 10000000 wmfod_norm.mif tracks_10M.tck
+tckgen -act 5tt_coreg.mif -backtrack -seed_gmwmi gmwmSeed_coreg.mif -nthreads 8 -maxlength 250 -cutoff 0.06 -select 10000000 wmfod_norm.mif tracks_10M.tck
 
 # Extract a subset of tracks (here, 200 thousand) for ease of visualization
 tckedit tracks_10M.tck -number 200k smallerTracks_200k.tck
