@@ -36,5 +36,6 @@ mrview dwi_den_preproc_unbiased.mif -overlay.load gmwmSeed_coreg.mif
 mrview dwi_den_preproc_unbiased.mif -tractography.load smallerTracks_200k.tck
 
 # View the sifted tracks in mrview
-mrview dwi_den_preproc_unbiased.mif -tractography.load sift_1mio.tck
+# Uncomment the following line of code if you used tcksift; otherwise, tcksift2 will output a text file with weightings that are used for later commands (e.g., creating the connectome)
+#mrview dwi_den_preproc_unbiased.mif -tractography.load sift_1mio.tck
 
