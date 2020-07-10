@@ -1,15 +1,16 @@
 #!/bin/bash
 
 # Written by Andrew Jahn, University of Michigan, 02.25.2019
+# Updated 07.10.2020 to incorporate changes from MRtrix version 3.0.1
 # Based on Marlene Tahedl's BATMAN tutorial (http://www.miccai.org/edu/finalists/BATMAN_trimmed_tutorial.pdf)
 # The main difference between this script and the other one in this repository, is that this script assumes that your diffusion images were acquired with AP phase encoding
 # Thanks to John Plass and Bennet Fauber for useful comments
 
 display_usage() {
-	echo "$(basename $0) [Raw Diffusion] [Fieldmap] [AP bvec] [AP bval] [PA bvec] [PA bval] [Anatomical]"
+	echo "$(basename $0) [Raw Diffusion] [RevPhaseImage] [AP bvec] [AP bval] [PA bvec] [PA bval] [Anatomical]"
 	echo "This script uses MRtrix to analyze diffusion data. It requires 7 arguments: 
 		1) The raw diffusion image;
-		2) The fieldmap image;
+		2) The image acquired with the reverse phase-encoding direction;
 		3) The bvec file for the data acquired in the AP direction;
 		4) The bval file for the data acquired in the AP direction;
 		5) The bvec file for the data acquired in the PA direction;
@@ -24,7 +25,7 @@ display_usage() {
 	fi
 
 RAW_DWI=$1
-FIELDMAP=$2
+REV_PHASE=$2
 AP_BVEC=$3
 AP_BVAL=$4
 PA_BVEC=$5
@@ -48,7 +49,7 @@ dwiextract dwi_den.mif - -bzero | mrmath - mean mean_b0_AP.mif -axis 3
 # For the PA_BVEC and PA_BVAL files, they should be in the follwing format (assuming you extract only one volume):
 # PA_BVEC: 0 0 0
 # PA_BVAL: 0
-mrconvert $FIELDMAP PA.mif # If the PA map contains only 1 image, you will need to add the option "-coord 3 0"
+mrconvert $REV_PHASE PA.mif # If the PA map contains only 1 image, you will need to add the option "-coord 3 0"
 mrconvert PA.mif -fslgrad $PA_BVEC $PA_BVAL - | mrmath - mean mean_b0_PA.mif -axis 3
 
 # Concatenates the b0 images from AP and PA directions to create a paired b0 image
