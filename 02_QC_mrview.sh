@@ -18,21 +18,25 @@ echo "Now viewing response function for CSF"
 shview csf.txt
 
 # Views the FODs overlaid on the tissue types (Blue=WM; Green=GM; Red=CSF)
+echo "Now viewing the FODs (Blue=WM; Green=GM; Red=CSF)"
 mrview vf.mif -odf.load_sh wmfod.mif
 
 
 ### Quality checks for Step 3 ###
 
 # Check alignment of the 5 tissue types before and after alignment (new alignment in red, old alignment in blue)
+echo "Checking alignment between grey matter alignment before (blue) and after (red)"
 mrview dwi_den_preproc_unbiased.mif -overlay.load 5tt_nocoreg.mif -overlay.colourmap 2 -overlay.load 5tt_coreg.mif -overlay.colourmap 1
 
 # Check the seed region (should match up along the GM/WM boundary)
+echo "Checking alignment of the seed region with the GM/WM boundary"
 mrview dwi_den_preproc_unbiased.mif -overlay.load gmwmSeed_coreg.mif
 
 
 ### Quality checks for Step 4 ###
 
 # View the tracks in mrview
+echo "Now viewing the tracks in mrview (red=left-to-right; blue=bottom-to-top; green=forward-to-back)"
 mrview dwi_den_preproc_unbiased.mif -tractography.load smallerTracks_200k.tck
 
 # View the sifted tracks in mrview
