@@ -43,3 +43,9 @@ mrview dwi_den_preproc_unbiased.mif -tractography.load smallerTracks_200k.tck
 # Uncomment the following line of code if you used tcksift; otherwise, tcksift2 will output a text file with weightings that are used for later commands (e.g., creating the connectome)
 #mrview dwi_den_preproc_unbiased.mif -tractography.load sift_1mio.tck
 
+cd dwifslpreproc-tmp-*
+totalSlices=`mrinfo dwi.mif | grep Dimensions | awk '{print $6 * $8}'`
+totalOutliers=`awk '{ for(i=1;i<=NF;i++)sum+=$i } END { print sum }' dwi_post_eddy.eddy_outlier_map`
+echo "If the following number is greater than 10, you may have to discard this subject because of too much motion or corrupted slices"
+echo "scale=5; ($totalOutliers / $totalSlices * 100)/1" | bc | tee percentageOutliers.txt
+cd ..
